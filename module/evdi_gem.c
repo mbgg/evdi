@@ -10,10 +10,6 @@
 
 #include <linux/sched.h>
 #include <linux/version.h>
-#if KERNEL_VERSION(5, 18, 0) <= LINUX_VERSION_CODE || defined(EL8) || defined(EL9)
-#elif KERNEL_VERSION(5, 11, 0) <= LINUX_VERSION_CODE
-#include <linux/dma-buf-map.h>
-#endif
 #if KERNEL_VERSION(5, 16, 0) <= LINUX_VERSION_CODE || defined(EL9)
 #include <drm/drm_prime.h>
 #include <drm/drm_file.h>
