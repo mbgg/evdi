@@ -23,9 +23,7 @@
 #include <linux/dma-buf.h>
 #include <drm/drm_cache.h>
 
-#if KERNEL_VERSION(5, 16, 0) <= LINUX_VERSION_CODE || defined(EL9)
 MODULE_IMPORT_NS(DMA_BUF);
-#endif
 
 #if KERNEL_VERSION(5, 11, 0) <= LINUX_VERSION_CODE || defined(EL8)
 static int evdi_prime_pin(struct drm_gem_object *obj);
@@ -288,7 +286,7 @@ int evdi_gem_vmap(struct evdi_gem_object *obj)
 #if KERNEL_VERSION(5, 18, 0) <= LINUX_VERSION_CODE || defined(EL8) || defined(EL9)
 		struct iosys_map map = IOSYS_MAP_INIT_VADDR(NULL);
 #elif KERNEL_VERSION(5, 11, 0) <= LINUX_VERSION_CODE || defined(EL8)
-		struct dma_buf_map map = DMA_BUF_MAP_INIT_VADDR(NULL);
+		struct iosys_map map = IOSYS_MAP_INIT_VADDR(NULL);
 #endif
 
 #if KERNEL_VERSION(5, 11, 0) <= LINUX_VERSION_CODE || defined(EL8)
@@ -329,12 +327,12 @@ void evdi_gem_vunmap(struct evdi_gem_object *obj)
 		dma_buf_vunmap(obj->base.import_attach->dmabuf, &map);
 
 #elif KERNEL_VERSION(5, 11, 0) <= LINUX_VERSION_CODE || defined(EL8)
-		struct dma_buf_map map;
+		struct iosys_map map;
 
 		if (obj->vmap_is_iomem)
-			dma_buf_map_set_vaddr_iomem(&map, obj->vmapping);
+			iosys_map_set_vaddr_iomem(&map, obj->vmapping);
 		else
-			dma_buf_map_set_vaddr(&map, obj->vmapping);
+			iosys_map_set_vaddr(&map, obj->vmapping);
 
 		dma_buf_vunmap(obj->base.import_attach->dmabuf, &map);
 #else
